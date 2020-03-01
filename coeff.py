@@ -16,17 +16,17 @@ def formCoefVect():
     coef_vect = list()
     for el in cf:
         coef = ""
-        for i in range(len(el)-1):
+        for i in range(len(el) - 1):
             if el[i] == el[i + 1]:
                 continue
             else:
                 coef += str(el[i])
-        coef += str(el[len(el)-1])
+        coef += str(el[len(el) - 1])
         coef_vect.append(coef)
     return coef_vect
 
 
-def removeBadMonoms(values, dnf, cf):  # , cf, dnf):
+def findBadMonoms(values, dnf, cf):  # , cf, dnf):
     bad = set()
     for el in values:
         elstr = ''.join(str(x) for x in el)
@@ -44,6 +44,28 @@ def removeBadMonoms(values, dnf, cf):  # , cf, dnf):
     return bad
 
 
+def minim(values, dnf, cf, bad):
+    for el in values:
+        min = set()
+        elstr = ''.join(str(x) for x in el)
+        if elstr in dnf:
+            for coef in cf:
+                s = "| "
+                for i in coef:
+                    if dnf[5 - int(i)] == '0':
+                        s += '+' + str(i)
+                    else:
+                        s += '+/' + str(i)
+                s += ' |'
+            if s in bad:
+                continue
+            else:
+                min.add(s)
+        else:
+            continue
+    writeln()
+
+
 n = 6
 a = formCoefVect()
 print(a)
@@ -55,4 +77,3 @@ for st in sys.stdin:
     dnf.append(st)
 
 print(removeBadMonoms(b, dnf, a))
-
