@@ -27,7 +27,7 @@ def formCoefVect():
 
 
 def findBadMonoms(values, dnf, cf):  # , cf, dnf):
-    bad = set()
+    bad = list()
     for el in values:
         elstr = ''.join(str(x) for x in el)
         if elstr in dnf:
@@ -35,45 +35,44 @@ def findBadMonoms(values, dnf, cf):  # , cf, dnf):
         for coef in cf:
             s = "| "
             for i in coef:
-                if dnf[5 - int(i)] == '0':
+                if elstr[5 - int(i)] == '0':
                     s += '+' + str(i)
                 else:
                     s += '+/' + str(i)
             s += ' |'
-            bad.add(s)
+            bad.append(s)
     return bad
 
 
 def minim(values, dnf, cf, bad):
     for el in values:
-        min = set()
+        out = ''
         elstr = ''.join(str(x) for x in el)
-        if elstr in dnf:
-            for coef in cf:
-                s = "| "
-                for i in coef:
-                    if dnf[5 - int(i)] == '0':
-                        s += '+' + str(i)
-                    else:
-                        s += '+/' + str(i)
-                s += ' |'
+        if elstr not in dnf:
+            continue
+        for coef in cf:
+            s = "| "
+            for i in coef:
+                if elstr[5 - int(i)] == '0':
+                    s += '+' + str(i)
+                else:
+                    s += '+/' + str(i)
+            s += ' |'
             if s in bad:
                 continue
             else:
-                min.add(s)
-        else:
-            continue
-    writeln()
+                out += s + '+'
+        out = out[:-1]
+        print(out + '=1 for' + str(el) + '\n')
 
-
-n = 6
-a = formCoefVect()
-print(a)
-b = list(itertools.product(range(2), repeat=6))
 
 dnf = list()
 for st in sys.stdin:
     st = st.strip('\n')
     dnf.append(st)
+n = 6
+cf = formCoefVect()
+values = list(itertools.product(range(2), repeat=6))
 
-print(removeBadMonoms(b, dnf, a))
+bad = findBadMonoms(values, dnf, cf)
+minim(values, dnf, cf, bad)
