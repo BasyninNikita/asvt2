@@ -14,7 +14,6 @@ def formCoefVect():
                 j -= 1
                 break
         j += 1
-    #cf.remove(cf[0])
     coef_vect = list()
     for el in cf:
         coef = ""
@@ -76,30 +75,30 @@ def minim(values, dnf, cf, bad):
         system.append(ur)
         out = out[:-1]
         print(out + '=1 for' + str(el))
-    #sred = sorted(numb.items(), key=lambda value: value[1], reverse=True)
-    #sred.sort(key=lambda k: len(re.sub(r"[+/|]", "", k[0])))
-    sred = sorted(numb.items(), key=lambda k: len(re.sub(r"[+/|]", "", k[0])))
-    sred.sort(key=lambda k: k[1],reverse=True)
+    numb.pop('| +0+/1+/2+/3 |')
+    sred = sorted(numb.items(), key=lambda value: value[1], reverse=True)
+    sred.sort(key=lambda k: len(re.sub(r"[+/|]", "", k[0])))
     needed_coef = list()
-    i = 0
     while system:
         for ur in system:
-            if sred[i][0] in ur:
-                needed_coef.append(sred[i][0])
+            if sred[0][0] in ur:
+                needed_coef.append(sred[0][0])
                 j = 0
                 while j < len(system):
-                    if sred[i][0] in system[j]:
+                    if sred[0][0] in system[j]:
                         system.remove(system[j])
                     else:
                         j += 1
-
-                # for uravn in system:
-                #     for coeff in uravn:
-                #         a = numb.setdefault(coeff, 0)
-                #         a += 1
-                #         numb[coeff] = a
+                sred.remove(sred[0])
+                dd = defaultdict(int)
+                for uravn in system:
+                    for coeff in uravn:
+                        a = numb.setdefault(coeff, 0)
+                        a += 1
+                        dd[coeff] = a
+                sred = sorted(dd.items(), key=lambda value: value[1], reverse=True)
+                sred.sort(key=lambda k: len(re.sub(r"[+/|]", "", k[0])))
                 break
-        i += 1
     return needed_coef
 
 
